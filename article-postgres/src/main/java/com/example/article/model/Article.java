@@ -16,13 +16,13 @@ public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_id")
+    @Column(name = "article_id", nullable = false)
     private long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "body")
+    @Column(name = "body", nullable = false)
     private String body;
 
     @ManyToOne
