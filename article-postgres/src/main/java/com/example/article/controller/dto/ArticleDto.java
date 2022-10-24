@@ -1,7 +1,6 @@
 package com.example.article.controller.dto;
 
 
-import com.example.article.model.Category;
 import lombok.*;
 
 import javax.validation.constraints.Pattern;

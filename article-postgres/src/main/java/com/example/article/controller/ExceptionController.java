@@ -21,4 +21,10 @@ public class ExceptionController {
     public CustomError internalServerError(Exception e) {
         return new CustomError(500, e.getMessage());
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CustomError badRequest(IllegalArgumentException e) {
+        return new CustomError(400, e.getMessage());
+    }
 }

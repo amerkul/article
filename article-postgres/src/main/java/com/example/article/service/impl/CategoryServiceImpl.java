@@ -1,7 +1,7 @@
 package com.example.article.service.impl;
 
 import com.example.article.exception.CustomNotFountException;
-import com.example.article.model.Category;
+import com.example.article.model.Article;
 import com.example.article.repository.CategoryRepository;
 import com.example.article.service.CategoryService;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category create(Category category) {
+    public Article create(Article category) {
         logger.debug("Create category; category - "+ category);
         categoryRepository.save(category);
         return category;
@@ -29,14 +29,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public List<Category> retrieveAll() {
+    public List<Article> retrieveAll() {
         logger.debug("Retrieve all categories");
         return categoryRepository.findAll();
     }
 
     @Override
     @Transactional
-    public Category retrieveById(long categoryId) {
+    public Article retrieveById(long categoryId) {
         logger.debug("Retrieve category by id = " + categoryId);
         return categoryRepository.findById(categoryId).orElseThrow(() ->
                 new CustomNotFountException("Unable to retrieve an article with id = " + categoryId));
@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void update(Category category) {
+    public void update(Article category) {
         logger.debug("Update category - " + category);
         categoryRepository.save(category);
     }
@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void delete(long categoryId) {
         logger.debug("Delete category by id = " + categoryId);
-        Category category = new Category();
+        Article category = new Article();
         category.setId(categoryId);
         categoryRepository.delete(category);
     }

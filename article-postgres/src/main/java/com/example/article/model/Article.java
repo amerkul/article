@@ -27,6 +27,6 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)
-    private Category category;
+    private Article category;
 
 }
