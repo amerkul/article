@@ -1,10 +1,9 @@
-package com.example.article.service.impl;
+package com.example.articlemongo.service.impl;
 
-import com.example.article.exception.CustomNotFountException;
-import com.example.article.model.Article;
-import com.example.article.model.Category;
-import com.example.article.repository.CategoryRepository;
-import com.example.article.service.CategoryService;
+import com.example.articlemongo.exception.CustomNotFountException;
+import com.example.articlemongo.model.Category;
+import com.example.articlemongo.repository.CategoryRepository;
+import com.example.articlemongo.service.CategoryService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +36,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category retrieveById(long categoryId) {
+    public Category retrieveById(String categoryId) {
         logger.debug("Retrieve category by id = " + categoryId);
         return categoryRepository.findById(categoryId).orElseThrow(() ->
-                new CustomNotFountException("Unable to retrieve an article with id = " + categoryId));
+                new CustomNotFountException("Category with id = " + categoryId + " is not found"));
     }
 
     @Override
@@ -52,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void delete(long categoryId) {
+    public void delete(String categoryId) {
         logger.debug("Delete category by id = " + categoryId);
         Category category = new Category();
         category.setId(categoryId);

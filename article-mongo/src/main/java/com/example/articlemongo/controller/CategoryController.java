@@ -1,12 +1,13 @@
-package com.example.article.controller;
+package com.example.articlemongo.controller;
 
-import com.example.article.config.MapperConfig;
-import com.example.article.controller.dto.CategoryDto;
-import com.example.article.model.Article;
-import com.example.article.model.Category;
-import com.example.article.service.CategoryService;
+import com.example.articlemongo.config.MapperConfig;
+import com.example.articlemongo.controller.dto.CategoryDto;
+import com.example.articlemongo.model.Category;
+import com.example.articlemongo.service.CategoryService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +16,17 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value ="categories")
+@RequestMapping(value ="/categories")
 public class CategoryController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
     private CategoryService categoryService;
     private ModelMapper modelMapper;
 
     @PostMapping(value = "/category", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto create(@RequestBody @Valid CategoryDto categoryDto) {
+        logger.debug("CategoryDto - " + categoryDto);
         Category category = categoryService.create(categoryBuilder(categoryDto));
         return categoryDtoBuilder(category);
     }
@@ -41,13 +44,13 @@ public class CategoryController {
 
     @GetMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryDto getById(@PathVariable("id") long id) {
+    public CategoryDto getById(@PathVariable("id") String id) {
         return categoryDtoBuilder(categoryService.retrieveById(id));
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteById(@PathVariable("id") long id) {
+    public void deleteById(@PathVariable("id") String id) {
         categoryService.delete(id);
     }
 

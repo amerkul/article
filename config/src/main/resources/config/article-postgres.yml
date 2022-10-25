@@ -15,10 +15,10 @@ spring:
   database:
     driverClassName: org.postgresql.Driver
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: *
-    enabled-by-default: true
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: *
+#    enabled-by-default: true
 

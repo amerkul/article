@@ -1,6 +1,6 @@
 spring:
   application:
-    name: article-postgres
+    name: article-mongo
   profiles:
     active: dev
   cloud:

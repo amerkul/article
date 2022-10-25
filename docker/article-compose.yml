@@ -1,0 +1,117 @@
+version: "1.1"
+
+services:
+  postgres:
+    image: postgres:14.5
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "article_dev"
+    volumes:
+      - article:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
+    networks:
+      article:
+        aliases:
+         - "database"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  configserver:
+#    build:
+#      dockerfile: ../config/Dockerfile
+#    image: config
+    image: docker.io/library/config
+    container_name: configserver
+    ports:
+      - "8071:8071"
+    networks:
+      article:
+        aliases:
+          - "configserver"
+  article-postgres:
+    container_name: articlepostgres
+#    build:
+#      dockerfile: ../article-postgres/Dockerfile
+#    image: article-postgres
+    image: docker.io/library/article-postgres
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: "dev"
+      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+      DATABASESERVER_PORT: "5432"
+    depends_on:
+      postgres:
+        condition: service_started
+      configserver:
+        condition: service_started
+    networks:
+      - article
+  article-mongo:
+    container_name: articlemongo
+    #    build:
+    #      dockerfile: ../article-postgres/Dockerfile
+    #    image: article-postgres
+    image: docker.io/library/article-mongo
+    ports:
+      - "8180:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: "dev"
+      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+      DATABASESERVER_PORT: "27017"
+    depends_on:
+      mongo:
+        condition: service_started
+      configserver:
+        condition: service_started
+    networks:
+      - article
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=article_dev
+    networks:
+      article:
+         aliases:
+           - mongo
+    volumes:
+      - mongodb:/data/db
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: "27017"
+    networks:
+      article:
+        aliases:
+         - mongo-express
+    depends_on:
+      - mongo
+
+
+networks:
+  article:
+    driver: bridge
+
+volumes:
+  article:
+    driver: local
+  mongodb:
+    driver: local

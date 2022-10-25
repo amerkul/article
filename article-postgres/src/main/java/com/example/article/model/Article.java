@@ -25,8 +25,8 @@ public class Article {
     @Column(name = "body", nullable = false)
     private String body;
 
-    @ManyToOne
-    @JoinColumn(name = "article_id", nullable = false)
-    private Article category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
 }
