@@ -1,4 +1,14 @@
 spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          zkNodes: kafka
+          brokers: kafka
+      bindings:
+        output:
+          destination: orgChangeTopic
+          content-type: application/json
   jpa:
     hibernate:
       ddl-auto: none

@@ -1,5 +1,6 @@
 package com.example.articlemongo.service.impl;
 
+import com.example.articlemongo.exception.CustomNotFountException;
 import com.example.articlemongo.model.Article;
 import com.example.articlemongo.repository.ArticleRepository;
 import com.example.articlemongo.service.ArticleService;
@@ -36,9 +37,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public Article retrieveById(long articleId) {
+    public Article retrieveById(String articleId) {
         logger.debug("Retrieve article by id = " + articleId);
-        return articleRepository.findById("").orElseThrow();
+        return articleRepository.findById(articleId).orElseThrow(() ->
+                new CustomNotFountException("Article with id = " + articleId + "not found"));
     }
 
     @Override
@@ -50,9 +52,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public void delete(long articleId) {
+    public void delete(String articleId) {
         logger.debug("Delete article by id = " + articleId);
         Article article = new Article();
+        article.setArticleId(articleId);
         articleRepository.delete(article);
     }
 }

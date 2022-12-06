@@ -41,13 +41,13 @@ public class ArticleController {
 
     @GetMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public ArticleDto getById(@PathVariable("id") long id) {
+    public ArticleDto getById(@PathVariable("id") String id) {
         return articleDtoBuilder(articleService.retrieveById(id));
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteById(@PathVariable("id") long id) {
+    public void deleteById(@PathVariable("id") String id) {
         articleService.delete(id);
     }
 

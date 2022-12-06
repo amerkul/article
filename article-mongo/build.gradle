@@ -38,6 +38,9 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-autoconfigure
 	implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.7.5'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-stream', version: '3.0.13.RELEASE'
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-stream-kafka
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-stream-kafka', version: '3.0.13.RELEASE'
 
 }
 

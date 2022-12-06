@@ -26,4 +26,5 @@ public class ArticleDto {
     @Size(min = 1, max = 2000, message = "The size should be between 1 and 2000 symbols")
     private String body;
 
+    private Category category;
 }

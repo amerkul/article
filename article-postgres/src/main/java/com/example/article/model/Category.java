@@ -1,5 +1,6 @@
 package com.example.article.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,12 @@ public class Category {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.ALL)
     private List<Article> articles = new ArrayList<>();
+
+    public Category(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

@@ -12,16 +12,9 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "articles")
 public class Category {
 
     @Id
-    private String id;
+    private long categoryId;
     private String name;
-    private List<Article> articles = new ArrayList<>();
-
-    public Category(String name, List<Article> articles) {
-        this.articles = articles;
-        this.name = name;
-    }
 }
