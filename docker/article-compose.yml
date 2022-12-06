@@ -130,7 +130,9 @@ services:
     image: nginx
     restart: always
     volumes:
+      - nginxdata:/data/db
       - ./conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./auth:/etc/nginx/conf.d
     ports:
       - "80:80"
     links:
@@ -146,4 +148,6 @@ volumes:
   article:
     driver: local
   mongodb:
+    driver: local
+  nginxdata:
     driver: local
