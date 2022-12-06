@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -49,6 +50,18 @@ public class ArticleController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteById(@PathVariable("id") String id) {
         articleService.delete(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/search/title", produces = "application/json")
+    public ArticleDto getByTitle(@RequestParam("title") String title) {
+        return articleDtoBuilder(articleService.retrieveByTitle(title));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/search/body", produces = "application/json")
+    public List<ArticleDto> getByBody(@RequestParam("body") String body) {
+        return MapperConfig.convertList(articleService.retrieveByBody(body), this::articleDtoBuilder);
     }
 
 

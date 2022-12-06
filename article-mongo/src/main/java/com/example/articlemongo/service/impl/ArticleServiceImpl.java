@@ -58,4 +58,14 @@ public class ArticleServiceImpl implements ArticleService {
         article.setArticleId(articleId);
         articleRepository.delete(article);
     }
+
+    @Override
+    public Article retrieveByTitle(String title) {
+        return articleRepository.findArticlesByTitle(title);
+    }
+
+    @Override
+    public List<Article> retrieveByBody(String body) {
+        return articleRepository.findArticlesByBody(".*" + body  + ".*");
+    }
 }
