@@ -63,8 +63,13 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public void delete(long articleId) {
         logger.debug("Delete article by id = " + articleId);
-        Article article = new Article();
-        article.setId(articleId);
-        articleRepository.delete(article);
+        articleRepository.deleteArticleById(articleId);
+    }
+
+    @Override
+    @Transactional
+    public int countArticles() {
+        logger.debug("Count articles");
+        return articleRepository.countArticles();
     }
 }

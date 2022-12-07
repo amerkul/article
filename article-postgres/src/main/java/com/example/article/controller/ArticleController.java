@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/articles/{categoryId}")
+@RequestMapping(value = "/articles")
 public class ArticleController {
 
     private static final Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
@@ -26,7 +26,7 @@ public class ArticleController {
     private CategoryService categoryService;
     private ModelMapper modelMapper;
 
-    @PostMapping(value = "/article", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/{categoryId}/article", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public ArticleDto create(@RequestBody @Valid ArticleDto articleDto,
                              @PathVariable("categoryId") long categoryId) {
@@ -34,19 +34,19 @@ public class ArticleController {
         return articleDtoBuilder(article);
     }
 
-    @PutMapping(value = "/article", consumes = "application/json")
+    @PutMapping(value = "/{categoryId}/article", consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void update(@RequestBody @Valid ArticleDto articleDto) {
         articleService.update(articleBuilder(articleDto));
     }
 
-    @GetMapping(value = "/all", produces = "application/json")
+    @GetMapping(value = "/{categoryId}/all", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<ArticleDto> getAll() {
         return MapperConfig.convertList(articleService.retrieveAll(), this::articleDtoBuilder);
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json")
+    @GetMapping(value = "/{categoryId}/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public ArticleDto getById(@PathVariable("id") long id) {
         return articleDtoBuilder(articleService.retrieveById(id));
@@ -58,6 +58,11 @@ public class ArticleController {
         articleService.delete(id);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/all/count")
+    public int countArticles(){
+        return articleService.countArticles();
+    }
 
     private Article articleBuilder(ArticleDto articleDto) {
         return modelMapper.map(articleDto, Article.class);
