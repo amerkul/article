@@ -1,0 +1,166 @@
+version: "1.1"
+
+services:
+  postgres:
+    image: postgres:14.5
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "article_dev"
+    volumes:
+      - article:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
+    networks:
+      article:
+        aliases:
+         - "database"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      article:
+        aliases:
+          - "pgadmin"
+  configserver:
+    image: docker.io/library/config
+    container_name: configserver
+    expose:
+      - "8071"
+    networks:
+      article:
+        aliases:
+          - "configserver"
+  article-postgres:
+    container_name: articlepostgres
+    image:  docker.io/library/article-postgres-1
+    expose:
+      - "8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: "dev"
+      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+      DATABASESERVER_PORT: "5432"
+    depends_on:
+      postgres:
+        condition: service_started
+      configserver:
+        condition: service_started
+      kafkaserver:
+        condition: service_started
+    networks:
+      - article
+  article-mongo:
+    container_name: articlemongo
+    image: docker.io/library/article-mongo-1
+    expose:
+      - "8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: "dev"
+      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+      DATABASESERVER_PORT: "27017"
+    depends_on:
+      mongo:
+        condition: service_started
+      configserver:
+        condition: service_started
+      kafkaserver:
+        condition: service_started
+    networks:
+      - article
+  mongo:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=article_dev
+    networks:
+      article:
+         aliases:
+           - "mongo"
+    volumes:
+      - mongodb:/data/db
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: "27017"
+    networks:
+      article:
+        aliases:
+         - mongo-express
+    depends_on:
+      - mongo
+  zookeeper:
+    image: wurstmeister/zookeeper
+    expose:
+      - "2181"
+    networks:
+      article:
+        aliases:
+          - "zookeeper"
+  kafkaserver:
+    image: wurstmeister/kafka:latest
+    expose:
+      - "9092"
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
+      - KAFKA_ADVERTISED_PORT=9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper:zookeeper
+    networks:
+      article:
+        aliases:
+          - "kafka"
+  nginx:
+    container_name: nginx
+    image: nginx
+    restart: always
+    volumes:
+      - nginxdata:/data/db
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./auth:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    links:
+      - article-mongo
+    networks:
+      article:
+        aliases:
+          - "nginx"
+networks:
+  article:
+    driver: bridge
+volumes:
+  article:
+    driver: local
+  mongodb:
+    driver: local
+  nginxdata:
+    driver: local
+  pgadmin-data:
+    driver: local
