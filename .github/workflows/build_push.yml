@@ -27,7 +27,7 @@ jobs:
       uses: docker/build-push-action@v3
       with: 
         context: config
-        file: Dockerfile
+        file: config/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test_repository:tagname
     -
@@ -35,7 +35,7 @@ jobs:
       uses: docker/build-push-action@v3
       with: 
         context: article-mongo
-        file: Dockerfile
+        file: article-mongo/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test_repository:tagname
     -
@@ -43,7 +43,7 @@ jobs:
       uses: docker/build-push-action@v3
       with: 
         context: article-postgres
-        file: Dockerfile
+        file: article-postgres/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test_repository:tagname
       
