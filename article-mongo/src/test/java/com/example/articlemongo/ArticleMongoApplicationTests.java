@@ -1,13 +1,13 @@
-package com.example.article;
+package com.example.articlemongo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ArticleApplicationTests {
+class ArticleMongoApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }

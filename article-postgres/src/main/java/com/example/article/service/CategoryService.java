@@ -1,5 +1,6 @@
 package com.example.article.service;
 
+import com.example.article.model.Article;
 import com.example.article.model.Category;
 
 import java.util.List;

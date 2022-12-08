@@ -1,5 +1,7 @@
 package com.example.article.service.impl;
 
+import com.example.article.exception.CustomNotFountException;
+import com.example.article.model.Article;
 import com.example.article.model.Category;
 import com.example.article.repository.CategoryRepository;
 import com.example.article.service.CategoryService;
@@ -37,7 +39,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category retrieveById(long categoryId) {
         logger.debug("Retrieve category by id = " + categoryId);
-        return categoryRepository.findById(categoryId).orElseThrow();
+        return categoryRepository.findById(categoryId).orElseThrow(() ->
+                new CustomNotFountException("Unable to retrieve an article with id = " + categoryId));
     }
 
     @Override

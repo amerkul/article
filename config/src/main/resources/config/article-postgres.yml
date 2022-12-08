@@ -1,4 +1,14 @@
 spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          zkNodes: kafka
+          brokers: kafka
+      bindings:
+        output:
+          destination: orgChangeTopic
+          content-type: application/json
   jpa:
     hibernate:
       ddl-auto: none
@@ -15,10 +25,10 @@ spring:
   database:
     driverClassName: org.postgresql.Driver
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: *
-    enabled-by-default: true
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: *
+#    enabled-by-default: true
 
