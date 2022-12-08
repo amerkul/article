@@ -26,7 +26,7 @@ jobs:
       name: Build and push config
       uses: docker/build-push-action@v3
       with: 
-        context: /config
+        context: config
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test_repository:tagname
@@ -34,7 +34,7 @@ jobs:
       name: Build and push article-mongo
       uses: docker/build-push-action@v3
       with: 
-        context: /article-mongo
+        context: article-mongo
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test_repository:tagname
@@ -42,7 +42,7 @@ jobs:
       name: Build and push article-postgres
       uses: docker/build-push-action@v3
       with: 
-        context: /article-postgres
+        context: article-postgres
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test_repository:tagname
