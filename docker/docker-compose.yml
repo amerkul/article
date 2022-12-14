@@ -65,7 +65,9 @@ services:
       - article
   article-mongo:
     container_name: articlemongo
-    image: docker.io/library/article-mongo-1
+    build:
+      dockerfile: ../article-mongo/Dockerfile
+    #image: docker.io/library/article-mongo-1
     expose:
       - "8080"
     environment:
