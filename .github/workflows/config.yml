@@ -35,16 +35,6 @@ jobs:
       run: |
             cd config 
             ./gradlew build
-    - 
-      name: Run article-mongo build with Gradle Wrapper
-      run: |
-            cd article-mongo 
-            ./gradlew build  
-    - 
-      name: Run article-postgres build with Gradle Wrapper
-      run: |
-            cd article-postgres 
-            ./gradlew build
     -
       name: Build and push config
       uses: docker/build-push-action@v3
