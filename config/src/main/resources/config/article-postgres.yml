@@ -3,8 +3,8 @@ spring:
     stream:
       kafka:
         binder:
-          zkNodes: kafka
-          brokers: kafka
+          zkNodes: kafka-service
+          brokers: kafka-service
       bindings:
         output:
           destination: orgChangeTopic
