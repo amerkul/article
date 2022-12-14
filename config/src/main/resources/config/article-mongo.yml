@@ -8,6 +8,6 @@ spring:
           group: licensingGroup
       kafka:
         binder:
-          zkNodes: kafka
-          brokers: kafka
+          zkNodes: kafka-service
+          brokers: kafka-service
 
