@@ -1,73 +1,73 @@
-name: Article_application
+# name: Article_application
 
-on:
-  push: 
-    branches: [ main ]
+# on:
+#   push: 
+#     branches: [ main ]
     
-jobs:
-  build:
+# jobs:
+#   build:
   
-    runs-on: ubuntu-latest
+#     runs-on: ubuntu-latest
     
-    steps:
-    - 
-      name: Checkout
-      uses: actions/checkout@v3
-    - 
-      name : Set up java
-      uses: actions/setup-java@v1 
-      with: 
-        java-version: 17
-    - 
-      name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
-    - 
-      name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-    - 
-      name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-    - 
-      name: Run config build with Gradle Wrapper
-      run: |
-            cd config 
-            ./gradlew build
-    - 
-      name: Run article-mongo build with Gradle Wrapper
-      run: |
-            cd article-mongo 
-            ./gradlew build  
-    - 
-      name: Run article-postgres build with Gradle Wrapper
-      run: |
-            cd article-postgres 
-            ./gradlew build
-    -
-      name: Build and push config
-      uses: docker/build-push-action@v3
-      with: 
-        context: config
-        file: config/Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/config:tagname
-    -
-      name: Build and push article-mongo
-      uses: docker/build-push-action@v3
-      with: 
-        context: article-mongo
-        file: article-mongo/Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/article-mongo:tagname
-    -
-      name: Build and push article-postgres
-      uses: docker/build-push-action@v3
-      with: 
-        context: article-postgres
-        file: article-postgres/Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/article-postgres:tagname
+#     steps:
+#     - 
+#       name: Checkout
+#       uses: actions/checkout@v3
+#     - 
+#       name : Set up java
+#       uses: actions/setup-java@v1 
+#       with: 
+#         java-version: 17
+#     - 
+#       name: Setup Gradle
+#       uses: gradle/gradle-build-action@v2
+#     - 
+#       name: Login to Docker Hub
+#       uses: docker/login-action@v2
+#       with:
+#         username: ${{ secrets.DOCKER_HUB_USERNAME }}
+#         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+#     - 
+#       name: Set up Docker Buildx
+#       uses: docker/setup-buildx-action@v2
+#     - 
+#       name: Run config build with Gradle Wrapper
+#       run: |
+#             cd config 
+#             ./gradlew build
+#     - 
+#       name: Run article-mongo build with Gradle Wrapper
+#       run: |
+#             cd article-mongo 
+#             ./gradlew build  
+#     - 
+#       name: Run article-postgres build with Gradle Wrapper
+#       run: |
+#             cd article-postgres 
+#             ./gradlew build
+#     -
+#       name: Build and push config
+#       uses: docker/build-push-action@v3
+#       with: 
+#         context: config
+#         file: config/Dockerfile
+#         push: true
+#         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/config:tagname
+#     -
+#       name: Build and push article-mongo
+#       uses: docker/build-push-action@v3
+#       with: 
+#         context: article-mongo
+#         file: article-mongo/Dockerfile
+#         push: true
+#         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/article-mongo:tagname
+#     -
+#       name: Build and push article-postgres
+#       uses: docker/build-push-action@v3
+#       with: 
+#         context: article-postgres
+#         file: article-postgres/Dockerfile
+#         push: true
+#         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/article-postgres:tagname
       
     
