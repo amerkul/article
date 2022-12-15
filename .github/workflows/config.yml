@@ -42,4 +42,4 @@ jobs:
         context: config
         file: config/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/config:1.2
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/config:1.3
