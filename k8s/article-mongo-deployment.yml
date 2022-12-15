@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: article-mongo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: article-mongo
+  template:
+    metadata:
+      labels:
+        app: article-mongo
+    spec:
+      containers:
+        - name: article-mongo
+          image: amerkul/article-mongo:tagname
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "dev"
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://config-service:8071"
+            - name: CONFIGSERVER_PORT
+              value: "8071"
+            - name: DATABASESERVER_PORT
+              value: "5432"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: article-mongo-service
+spec:
+  selector:
+    app: article-mongo
+  type: NodePort
+  ports:
+    - port: 8180
+      targetPort: 8080
+      nodePort: 30111
