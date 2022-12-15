@@ -1,10 +1,10 @@
 spring:
   cloud:
     stream:
-      kafka:
+      kafka-service:
         binder:
           zkNodes: kafka-service
-          brokers: kafka
+          brokers: kafka-service
           defaultBrokerPort: 9092
       bindings:
         output:
