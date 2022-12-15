@@ -4,7 +4,7 @@ spring:
       kafka:
         binder:
           zkNodes: kafka-service
-          brokers: kafka-service
+          brokers: kafka
           defaultBrokerPort: 9092
       bindings:
         output:
