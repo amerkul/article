@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: config
-          image: amerkul/config:1.1
+          image: amerkul/config:1.2
           ports:
             - containerPort: 8071
 
