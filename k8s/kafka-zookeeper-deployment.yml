@@ -63,7 +63,7 @@ spec:
       labels:
         app: kafka-cluster
     spec:
-      hostname: kafka
+      hostname: kafka-service
       containers:
         - name: kafka
           image: wurstmeister/kafka
@@ -71,7 +71,7 @@ spec:
             - containerPort: 9092
           env:
             - name: KAFKA_ADVERTISED_HOST_NAME
-              value: kafka
+              value: kafka-service
             - name: KAFKA_PORT
               value: "9092"
             - name: KAFKA_ZOOKEEPER_CONNECT

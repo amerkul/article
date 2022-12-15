@@ -10,4 +10,5 @@ spring:
         binder:
           zkNodes: kafka-service
           brokers: kafka-service
+          defaultBrokerPort: 9092
 

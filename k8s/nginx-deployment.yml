@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  nginx.htpasswd: |
+    name1:LT5bKcE1jkddM
+    name2:sa3tHJ3/KuYvI
+    name3:klGDV42JhmAeM
+  nginx.conf: |
+    events {}
+    http {
+    
+      access_log /var/log/nginx/access.log;
+      error_log /var/log/nginx/error.log;
+  
+      upstream mongo {
+        least_conn;
+        server article-mongo-service:8180 max_fails=3 fail_timeout=3s;
+      }
+  
+      upstream postgres {
+        least_conn;
+        server article-service:8080 max_fails=3 fail_timeout=3s;
+      }
+  
+      proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=CACHE:60m max_size=500m;
+      proxy_cache_key "$scheme$request_method$host$request_uri";
+      add_header cache-status $upstream_cache_status;
+  
+      server {
+        listen 80;
+        listen [::]:80;
+        server_name localhost;
+  
+        auth_basic "Private site";
+        auth_basic_user_file /etc/nginx/conf.d/nginx.htpasswd;
+  
+        set $http_cache_bypass 0;
+  
+        if ($request_method = POST) {
+          set $http_cache_bypass 1;
+        }
+  
+        if ($request_method = DELETE) {
+          set $http_cache_bypass 1;
+        }
+  
+        location = /api/all {
+          proxy_cache CACHE;
+          proxy_cache_valid 200 10s;
+          proxy_cache_bypass $http_cache_bypass;
+          proxy_pass http://mongo/articles/all/;
+        }
+  
+        location ~ /api/([1-9][0-9]*) {
+          proxy_cache CACHE;
+          proxy_cache_valid 200 10s;
+          proxy_cache_bypass $http_cache_bypass;
+          proxy_pass http://mongo/articles/$1/;
+        }
+  
+        location ~ /api/articles/([1-9][0-9]*)/article {
+          proxy_cache_bypass $http_cache_bypass;
+          proxy_pass http://postgres/articles/$1/article;
+        }
+  
+        location ~ /api/articles/([1-9][0-9]*) {
+          proxy_cache CACHE;
+          proxy_cache_valid 200 10s;
+          proxy_cache_bypass $http_cache_bypass;
+          proxy_pass http://postgres/articles/$1;
+        }
+  
+        location = /api/articles/all/count {
+          proxy_cache CACHE;
+          proxy_cache_valid 200 10s;
+          proxy_cache_bypass $http_cache_bypass;
+          proxy_pass http://postgres/articles/all/count;
+        }
+  
+        location ~ /api/articles/search/(title|body) {
+          proxy_cache CACHE;
+          proxy_cache_valid 200 10s;
+          proxy_cache_bypass $http_cache_bypass;
+          if ($arg_title) {
+            proxy_pass http://mongo/articles/search/$1?$1=$arg_title;
+          }
+          if ($arg_body) {
+            proxy_pass http://mongo/articles/search/$1?$1=$arg_body;
+          } 
+        }
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            - name: nginx-conf-d
+              mountPath: /etc/nginx/conf.d/nginx.htpasswd
+              subPath: nginx.htpasswd
+              readOnly: true
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: nginx-conf-d
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.htpasswd
+                path: nginx.htpasswd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+    - name: http-nginx
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: nginx
