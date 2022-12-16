@@ -4,7 +4,7 @@ spring:
       kafka:
         binder:
           zkNodes: zookeeper-cluster:2181
-          brokers: kafka-service
+          brokers: kafka
           defaultBrokerPort: 9092
       bindings:
         output:

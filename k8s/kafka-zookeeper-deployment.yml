@@ -43,8 +43,6 @@ spec:
       containers:
         - name: zookeeper
           image: wurstmeister/zookeeper
-          securityContext:
-            runAsUser: 0
           ports:
             - containerPort: 2181
 ---
@@ -75,7 +73,7 @@ spec:
             - name: KAFKA_ADVERTISED_PORT
               value: "9092"
             - name: KAFKA_ZOOKEEPER_CONNECT
-              value: crs-zookeeper-0.zookeeper-cluster.default.svc.cluster.local:2181
+              value: zookeeper-cluster:2181
           volumeMounts:
             - name: data
               mountPath: /mnt/kafka
@@ -88,3 +86,4 @@ spec:
         resources:
           requests:
             storage: "1Gi"
+#              value: crs-zookeeper-0.zookeeper-cluster.default.svc.cluster.local:2181
