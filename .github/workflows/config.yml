@@ -42,4 +42,4 @@ jobs:
         context: config
         file: config/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/config:1.1.${GITHUB_RUN_NUMBER}
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/config:1.1.1
