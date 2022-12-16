@@ -6,9 +6,9 @@ spring:
           destination: orgChangeTopic
           content-type: application/json
           group: licensingGroup
-      kafka-service:
+      kafka:
         binder:
-          zkNodes: kafka-service
+          zkNodes: zookeeper-cluster:2181
           brokers: kafka-service
           defaultBrokerPort: 9092
 

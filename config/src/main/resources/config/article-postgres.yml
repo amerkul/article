@@ -1,9 +1,9 @@
 spring:
   cloud:
     stream:
-      kafka-service:
+      kafka:
         binder:
-          zkNodes: kafka-service
+          zkNodes: zookeeper-cluster:2181
           brokers: kafka-service
           defaultBrokerPort: 9092
       bindings:
