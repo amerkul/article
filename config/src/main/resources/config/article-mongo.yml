@@ -8,6 +8,7 @@ spring:
           group: licensingGroup
       kafka:
         binder:
-          zkNodes: kafka
+          zkNodes: zookeeper-cluster:2181
           brokers: kafka
+          defaultBrokerPort: 9092
 
